@@ -99,27 +99,7 @@ struct TrophyCabinetView: View {
                     Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(Color.lfcGold)
                 }
             }
-            Text("ANFIELD TROPHY ROOM")
-                .font(.system(size: 27, weight: .black, design: .rounded))
-                .tracking(2).foregroundStyle(.white)
-            Text("YOU’LL NEVER WALK ALONE • YOUR LEGACY")
-                .font(.caption2.bold()).tracking(2).foregroundStyle(Color.lfcGold.opacity(0.8))
-            ZStack {
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(LinearGradient(colors: [Color.lfcRed.opacity(0.34), .black.opacity(0.42)],
-                                         startPoint: .top, endPoint: .bottom))
-                    .overlay(RoundedRectangle(cornerRadius: 24)
-                        .stroke(Color.lfcGold.opacity(0.28), lineWidth: 1))
-                VStack(spacing: 4) {
-                    Image(systemName: "trophy.fill")
-                        .font(.system(size: 82))
-                        .foregroundStyle(LinearGradient(colors: [Color.lfcGold, Color(red: 0.65, green: 0.36, blue: 0.07)],
-                                                        startPoint: .top, endPoint: .bottom))
-                        .shadow(color: Color.lfcGold.opacity(0.3), radius: 20)
-                    Text("HALL OF FAME").font(.system(size: 10, weight: .heavy))
-                        .tracking(3).foregroundStyle(Color.lfcGold.opacity(0.8))
-                }.padding(.vertical, 22)
-            }.frame(height: 155)
+            TrophyRoomHeaderView()
         }.padding(.vertical, 8)
     }
 
