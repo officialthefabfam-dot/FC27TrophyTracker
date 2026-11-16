@@ -10,6 +10,10 @@ jobs:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
+      - name: Generate Liverpool-inspired app icon
+        run: |
+          python3 -m pip install --user Pillow
+          python3 scripts/generate_app_icon.py
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate Xcode project
