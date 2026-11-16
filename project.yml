@@ -1,0 +1,19 @@
+name: FC27TrophyTracker
+options:
+  bundleIdPrefix: com.fabfam
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  FC27TrophyTracker:
+    type: application
+    platform: iOS
+    sources:
+      - Sources/FC27TrophyTracker
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.fabfam.fc27trophytracker
+        SWIFT_VERSION: 5.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        GENERATE_INFOPLIST_FILE: YES
