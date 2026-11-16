@@ -120,7 +120,7 @@ struct TrophyCabinetView: View {
     private var stats: some View {
         HStack(spacing: 10) {
             statCard("TROPHIES", value: "\(store.trophies.count)", symbol: "trophy.fill")
-            statCard("SEASONS", value: "\(Set(store.trophies.map(\\.season).filter { !$0.isEmpty }).union(store.seasons.map(\\.season)).count)", symbol: "calendar")
+            statCard("SEASONS", value: "\(Set(store.trophies.map(\.season).filter { !$0.isEmpty }).union(store.seasons.map(\.season)).count)", symbol: "calendar")
             statCard("LEAGUE TITLES", value: "\(store.trophies.filter { $0.category == "League" }.count)", symbol: "medal.fill")
         }
     }
