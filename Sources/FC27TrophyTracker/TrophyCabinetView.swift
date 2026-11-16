@@ -40,6 +40,7 @@ struct TrophyCabinetView: View {
                     VStack(spacing: 22) {
                         header
                         stats
+                        visualCabinet
                         careerRecords
                         seasonHistory
                         trophyCollection
@@ -120,6 +121,12 @@ struct TrophyCabinetView: View {
                 }.padding(.vertical, 22)
             }.frame(height: 155)
         }.padding(.vertical, 8)
+    }
+
+    private var visualCabinet: some View {
+        TrophyRoomCabinetView(trophies: store.trophies) { trophy in
+            selectedTrophy = trophy
+        }
     }
 
     private var stats: some View {
@@ -362,9 +369,13 @@ struct TrophyDetailView: View {
             ZStack {
                 Color(red: 0.055, green: 0.008, blue: 0.018).ignoresSafeArea()
                 VStack(spacing: 18) {
-                    Image(systemName: "trophy.fill").font(.system(size: 88))
-                        .foregroundStyle(LinearGradient(colors: [Color.lfcGold, .orange], startPoint: .top, endPoint: .bottom))
-                        .shadow(color: Color.lfcGold.opacity(0.25), radius: 20)
+                    Trophy3DView()
+                        .frame(height: 245)
+                        .padding(.horizontal, -8)
+                    Text("DRAG TO ROTATE")
+                        .font(.system(size: 9, weight: .heavy))
+                        .tracking(2)
+                        .foregroundStyle(Color.lfcGold.opacity(0.7))
                     Text(trophy.name.uppercased()).font(.title2.weight(.black)).multilineTextAlignment(.center)
                         .foregroundStyle(.white)
                     detailLine("Competition", trophy.competition)
