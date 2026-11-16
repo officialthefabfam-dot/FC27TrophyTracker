@@ -78,7 +78,7 @@ struct TrophyCabinetView: View {
             HStack {
                 Label("FC 27", systemImage: "trophy.fill")
                     .font(.system(size: 14, weight: .black, design: .rounded))
-                    .tracking(3).foregroundStyle(.lfcGold)
+                    .tracking(3).foregroundStyle(Color.lfcGold)
                 Spacer()
                 Menu {
                     Button { showingAddTrophy = true } label: {
@@ -95,28 +95,28 @@ struct TrophyCabinetView: View {
                         Label("Restore backup", systemImage: "square.and.arrow.down")
                     }
                 } label: {
-                    Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(.lfcGold)
+                    Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(Color.lfcGold)
                 }
             }
             Text("ANFIELD TROPHY ROOM")
                 .font(.system(size: 27, weight: .black, design: .rounded))
                 .tracking(2).foregroundStyle(.white)
             Text("YOU’LL NEVER WALK ALONE • YOUR LEGACY")
-                .font(.caption2.bold()).tracking(2).foregroundStyle(.lfcGold.opacity(0.8))
+                .font(.caption2.bold()).tracking(2).foregroundStyle(Color.lfcGold.opacity(0.8))
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
                     .fill(LinearGradient(colors: [Color.lfcRed.opacity(0.34), .black.opacity(0.42)],
                                          startPoint: .top, endPoint: .bottom))
                     .overlay(RoundedRectangle(cornerRadius: 24)
-                        .stroke(.lfcGold.opacity(0.28), lineWidth: 1))
+                        .stroke(Color.lfcGold.opacity(0.28), lineWidth: 1))
                 VStack(spacing: 4) {
                     Image(systemName: "trophy.fill")
                         .font(.system(size: 82))
-                        .foregroundStyle(LinearGradient(colors: [.lfcGold, Color(red: 0.65, green: 0.36, blue: 0.07)],
+                        .foregroundStyle(LinearGradient(colors: [Color.lfcGold, Color(red: 0.65, green: 0.36, blue: 0.07)],
                                                         startPoint: .top, endPoint: .bottom))
-                        .shadow(color: .lfcGold.opacity(0.3), radius: 20)
+                        .shadow(color: Color.lfcGold.opacity(0.3), radius: 20)
                     Text("HALL OF FAME").font(.system(size: 10, weight: .heavy))
-                        .tracking(3).foregroundStyle(.lfcGold.opacity(0.8))
+                        .tracking(3).foregroundStyle(Color.lfcGold.opacity(0.8))
                 }.padding(.vertical, 22)
             }.frame(height: 155)
         }.padding(.vertical, 8)
@@ -157,7 +157,7 @@ struct TrophyCabinetView: View {
                 Spacer()
                 Button { showingAddSeason = true } label: {
                     Image(systemName: "plus").font(.caption.bold()).foregroundStyle(.black)
-                        .padding(8).background(.lfcGold, in: Circle())
+                        .padding(8).background(Color.lfcGold, in: Circle())
                 }
             }
             if store.seasons.isEmpty {
@@ -165,17 +165,17 @@ struct TrophyCabinetView: View {
             } else {
                 ForEach(store.seasons.sorted { $0.season > $1.season }) { record in
                     HStack(spacing: 12) {
-                        Image(systemName: "calendar").foregroundStyle(.lfcGold)
-                            .frame(width: 38, height: 42).background(.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
+                        Image(systemName: "calendar").foregroundStyle(Color.lfcGold)
+                            .frame(width: 38, height: 42).background(Color.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
                         VStack(alignment: .leading, spacing: 3) {
                             Text(record.season).font(.headline).foregroundStyle(.white)
                             Text(record.league).font(.caption).foregroundStyle(.white.opacity(0.6))
                             Text("Champions: \(record.club.isEmpty ? "Not recorded" : record.club)")
-                                .font(.caption2).foregroundStyle(.lfcGold.opacity(0.85))
+                                .font(.caption2).foregroundStyle(Color.lfcGold.opacity(0.85))
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 3) {
-                            Text("GOLDEN BOOT").font(.system(size: 8, weight: .heavy)).tracking(1).foregroundStyle(.lfcGold)
+                            Text("GOLDEN BOOT").font(.system(size: 8, weight: .heavy)).tracking(1).foregroundStyle(Color.lfcGold)
                             Text(record.topScorerName).font(.subheadline.bold()).foregroundStyle(.white)
                             Text("\(record.topScorerGoals) goals • \(record.topScorerClub)")
                                 .font(.caption2).foregroundStyle(.white.opacity(0.6))
@@ -219,27 +219,27 @@ struct TrophyCabinetView: View {
 
     private func sectionHeading(_ title: String, symbol: String) -> some View {
         Label(title, systemImage: symbol).font(.system(size: 12, weight: .heavy))
-            .tracking(1.4).foregroundStyle(.lfcGold)
+            .tracking(1.4).foregroundStyle(Color.lfcGold)
     }
 
     private func statCard(_ title: String, value: String, symbol: String) -> some View {
         VStack(spacing: 7) {
-            Image(systemName: symbol).foregroundStyle(.lfcGold)
+            Image(systemName: symbol).foregroundStyle(Color.lfcGold)
             Text(value).font(.title2.bold()).foregroundStyle(.white)
             Text(title).font(.system(size: 8, weight: .bold)).tracking(0.6)
                 .foregroundStyle(.white.opacity(0.55)).lineLimit(1).minimumScaleFactor(0.7)
         }.frame(maxWidth: .infinity).padding(.vertical, 14)
             .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 13))
-            .overlay(RoundedRectangle(cornerRadius: 13).stroke(.lfcGold.opacity(0.2), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 13).stroke(Color.lfcGold.opacity(0.2), lineWidth: 1))
     }
 
     private func recordTile(_ title: String, value: String, detail: String, symbol: String) -> some View {
         VStack(alignment: .leading, spacing: 7) {
-            Image(systemName: symbol).foregroundStyle(.lfcGold)
+            Image(systemName: symbol).foregroundStyle(Color.lfcGold)
             Text(title.uppercased()).font(.system(size: 8, weight: .heavy)).tracking(0.7)
                 .foregroundStyle(.white.opacity(0.55))
             Text(value).font(.headline).foregroundStyle(.white).lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail).font(.caption2).foregroundStyle(.lfcGold.opacity(0.8)).lineLimit(2)
+            Text(detail).font(.caption2).foregroundStyle(Color.lfcGold.opacity(0.8)).lineLimit(2)
         }.frame(maxWidth: .infinity, alignment: .leading).padding(12)
             .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 13))
     }
@@ -252,12 +252,12 @@ struct TrophyCabinetView: View {
 
     private func trophyRow(_ trophy: Trophy) -> some View {
         HStack(spacing: 13) {
-            Image(systemName: "trophy.fill").font(.title2).foregroundStyle(.lfcGold)
-                .frame(width: 46, height: 54).background(.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
+            Image(systemName: "trophy.fill").font(.title2).foregroundStyle(Color.lfcGold)
+                .frame(width: 46, height: 54).background(Color.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
             VStack(alignment: .leading, spacing: 4) {
                 Text(trophy.name).font(.headline).foregroundStyle(.white)
                 Text("\(trophy.competition) • \(trophy.season)").font(.subheadline).foregroundStyle(.white.opacity(0.65))
-                Text(trophy.club).font(.caption).foregroundStyle(.lfcGold.opacity(0.85))
+                Text(trophy.club).font(.caption).foregroundStyle(Color.lfcGold.opacity(0.85))
             }
             Spacer()
             Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.white.opacity(0.35))
@@ -363,8 +363,8 @@ struct TrophyDetailView: View {
                 Color(red: 0.055, green: 0.008, blue: 0.018).ignoresSafeArea()
                 VStack(spacing: 18) {
                     Image(systemName: "trophy.fill").font(.system(size: 88))
-                        .foregroundStyle(LinearGradient(colors: [.lfcGold, .orange], startPoint: .top, endPoint: .bottom))
-                        .shadow(color: .lfcGold.opacity(0.25), radius: 20)
+                        .foregroundStyle(LinearGradient(colors: [Color.lfcGold, .orange], startPoint: .top, endPoint: .bottom))
+                        .shadow(color: Color.lfcGold.opacity(0.25), radius: 20)
                     Text(trophy.name.uppercased()).font(.title2.weight(.black)).multilineTextAlignment(.center)
                         .foregroundStyle(.white)
                     detailLine("Competition", trophy.competition)
