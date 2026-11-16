@@ -360,7 +360,7 @@ struct TrophyDetailView: View {
                     Image(systemName: "trophy.fill").font(.system(size: 88))
                         .foregroundStyle(LinearGradient(colors: [.yellow, .orange], startPoint: .top, endPoint: .bottom))
                         .shadow(color: .yellow.opacity(0.25), radius: 20)
-                    Text(trophy.name.uppercased()).font(.title2.black()).multilineTextAlignment(.center)
+                    Text(trophy.name.uppercased()).font(.title2.weight(.black)).multilineTextAlignment(.center)
                         .foregroundStyle(.white)
                     detailLine("Competition", trophy.competition)
                     detailLine("Season", trophy.season)
