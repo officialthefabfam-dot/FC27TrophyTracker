@@ -21,7 +21,6 @@ struct TrophyCabinetView: View {
     @EnvironmentObject private var store: TrophyStore
     @EnvironmentObject private var theme: ThemeSettings
     @State private var activeSheet: ActiveSheet?
-    @State private var showingQuickActions = false
     @State private var search = ""
     @State private var selectedCategory = "All"
     @State private var showingImporter = false
@@ -64,15 +63,6 @@ struct TrophyCabinetView: View {
                 case .trophy(let trophy): TrophyDetailView(trophy: trophy).environmentObject(theme)
                 }
             }
-            .confirmationDialog("Add to your career", isPresented: $showingQuickActions, titleVisibility: .visible) {
-                Button("Add trophy") { activeSheet = .addTrophy }
-                Button("Add season record") { activeSheet = .addSeason }
-                ShareLink(item: store.backupData(), preview: SharePreview("FC 27 Trophy Tracker backup")) {
-                    Label("Export backup", systemImage: "square.and.arrow.up")
-                }
-                Button("Restore backup") { showingImporter = true }
-                Button("Cancel", role: .cancel) {}
-            }
             .fileImporter(isPresented: $showingImporter, allowedContentTypes: [.json]) { result in
                 do {
                     let url = try result.get()
@@ -104,12 +94,25 @@ struct TrophyCabinetView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Personalise appearance")
-                Button { showingQuickActions = true } label: {
+                Menu {
+                    Button { activeSheet = .addTrophy } label: {
+                        Label("Add trophy", systemImage: "trophy")
+                    }
+                    Button { activeSheet = .addSeason } label: {
+                        Label("Add season record", systemImage: "crown")
+                    }
+                    Divider()
+                    ShareLink(item: store.backupData(), preview: SharePreview("FC 27 Trophy Tracker backup")) {
+                        Label("Export backup", systemImage: "square.and.arrow.up")
+                    }
+                    Button { showingImporter = true } label: {
+                        Label("Restore backup", systemImage: "square.and.arrow.down")
+                    }
+                } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2).foregroundStyle(theme.accent)
                         .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
-                .buttonStyle(.plain)
                 .accessibilityLabel("Add to career")
             }
             TrophyRoomHeaderView()
