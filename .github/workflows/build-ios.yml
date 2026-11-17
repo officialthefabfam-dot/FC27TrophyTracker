@@ -3,14 +3,14 @@ name: Build iOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main, theme/build-26-neutral-refresh, runner/build-35-macos-26-intel]
+    branches: [main, theme/build-26-neutral-refresh, runner/build-35-macos-26-intel, icon/emerald-gold-build39]
 
 jobs:
   build:
     runs-on: macos-26-intel
     steps:
       - uses: actions/checkout@v4
-      - name: Generate Liverpool-inspired app icon
+      - name: Generate emerald-and-gold trophy app icon
         run: |
           python3 -m venv .venv
           .venv/bin/python -m pip install Pillow
