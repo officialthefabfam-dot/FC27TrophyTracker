@@ -2,8 +2,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 private extension Color {
-    static let lfcRed = Color(red: 0.78, green: 0.015, blue: 0.075)
-    static let lfcGold = Color(red: 0.96, green: 0.72, blue: 0.24)
+    static let lfcRed = Color(red: 0.12, green: 0.15, blue: 0.20)
+    static let lfcGold = Color(red: 0.82, green: 0.72, blue: 0.52)
 }
 
 struct TrophyCabinetView: View {
@@ -32,8 +32,8 @@ struct TrophyCabinetView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(colors: [Color(red: 0.035, green: 0.008, blue: 0.016),
-                                        Color(red: 0.19, green: 0.012, blue: 0.035), .black],
+                LinearGradient(colors: [Color(red: 0.035, green: 0.045, blue: 0.065),
+                                        Color(red: 0.085, green: 0.105, blue: 0.14), .black],
                                startPoint: .topLeading, endPoint: .bottomTrailing)
                     .ignoresSafeArea()
                 ScrollView {
@@ -364,7 +364,7 @@ struct TrophyDetailView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.055, green: 0.008, blue: 0.018).ignoresSafeArea()
+                Color(red: 0.035, green: 0.045, blue: 0.065).ignoresSafeArea()
                 VStack(spacing: 18) {
                     Trophy3DView(competition: trophy.competition, category: trophy.category)
                         .frame(height: 245)
