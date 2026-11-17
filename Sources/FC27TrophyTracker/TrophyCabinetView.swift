@@ -8,7 +8,9 @@ private extension Color {
 
 struct TrophyCabinetView: View {
     @EnvironmentObject private var store: TrophyStore
+    @EnvironmentObject private var theme: ThemeSettings
     @State private var showingAddTrophy = false
+    @State private var showingSettings = false
     @State private var showingAddSeason = false
     @State private var selectedTrophy: Trophy?
     @State private var search = ""
@@ -32,10 +34,7 @@ struct TrophyCabinetView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(colors: [Color(red: 0.035, green: 0.008, blue: 0.016),
-                                        Color(red: 0.19, green: 0.012, blue: 0.035), .black],
-                               startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .ignoresSafeArea()
+                theme.background.ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 22) {
                         header
@@ -48,6 +47,10 @@ struct TrophyCabinetView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showingSettings) {
+                ThemeSettingsView().environmentObject(theme)
+                    .presentationDetents([.medium, .large])
+            }
             .sheet(isPresented: $showingAddTrophy) {
                 AddTrophyView().environmentObject(store)
             }
@@ -79,8 +82,13 @@ struct TrophyCabinetView: View {
             HStack {
                 Label("FC 27", systemImage: "trophy.fill")
                     .font(.system(size: 14, weight: .black, design: .rounded))
-                    .tracking(3).foregroundStyle(Color.lfcGold)
+                    .tracking(3).foregroundStyle(theme.accent)
                 Spacer()
+                Button { showingSettings = true } label: {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3).foregroundStyle(theme.accent)
+                }
+                .accessibilityLabel("Personalise appearance")
                 Menu {
                     Button { showingAddTrophy = true } label: {
                         Label("Add trophy", systemImage: "trophy")
@@ -96,7 +104,7 @@ struct TrophyCabinetView: View {
                         Label("Restore backup", systemImage: "square.and.arrow.down")
                     }
                 } label: {
-                    Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(Color.lfcGold)
+                    Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(theme.accent)
                 }
             }
             TrophyRoomHeaderView()
@@ -143,8 +151,8 @@ struct TrophyCabinetView: View {
                 sectionHeading("SEASON HISTORY", symbol: "clock.arrow.circlepath")
                 Spacer()
                 Button { showingAddSeason = true } label: {
-                    Image(systemName: "plus").font(.caption.bold()).foregroundStyle(.black)
-                        .padding(8).background(Color.lfcGold, in: Circle())
+                    Image(systemName: "plus").font(.caption.bold()).foregroundStyle(.white)
+                        .padding(8).background(theme.accent, in: Circle())
                 }
             }
             if store.seasons.isEmpty {
@@ -152,31 +160,31 @@ struct TrophyCabinetView: View {
             } else {
                 ForEach(store.seasons.sorted { $0.season > $1.season }) { record in
                     HStack(spacing: 12) {
-                        Image(systemName: "calendar").foregroundStyle(Color.lfcGold)
-                            .frame(width: 38, height: 42).background(Color.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
+                        Image(systemName: "calendar").foregroundStyle(theme.accent)
+                            .frame(width: 38, height: 42).background(theme.accent.opacity(0.10), in: RoundedRectangle(cornerRadius: 9))
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(record.season).font(.headline).foregroundStyle(.white)
-                            Text(record.league).font(.caption).foregroundStyle(.white.opacity(0.6))
+                            Text(record.season).font(.headline).foregroundStyle(theme.primaryText)
+                            Text(record.league).font(.caption).foregroundStyle(theme.secondaryText)
                             Text("Champions: \(record.club.isEmpty ? "Not recorded" : record.club)")
-                                .font(.caption2).foregroundStyle(Color.lfcGold.opacity(0.85))
+                                .font(.caption2).foregroundStyle(theme.accent.opacity(0.85))
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 3) {
-                            Text("GOLDEN BOOT").font(.system(size: 8, weight: .heavy)).tracking(1).foregroundStyle(Color.lfcGold)
-                            Text(record.topScorerName).font(.subheadline.bold()).foregroundStyle(.white)
+                            Text("GOLDEN BOOT").font(.system(size: 8, weight: .heavy)).tracking(1).foregroundStyle(theme.accent)
+                            Text(record.topScorerName).font(.subheadline.bold()).foregroundStyle(theme.primaryText)
                             Text("\(record.topScorerGoals) goals • \(record.topScorerClub)")
-                                .font(.caption2).foregroundStyle(.white.opacity(0.6))
+                                .font(.caption2).foregroundStyle(theme.secondaryText)
                             if !record.playerOfSeasonName.isEmpty {
                                 Text("PLAYER OF THE SEASON").font(.system(size: 8, weight: .heavy))
-                                    .tracking(0.8).foregroundStyle(Color.lfcGold)
+                                    .tracking(0.8).foregroundStyle(theme.accent)
                                     .padding(.top, 5)
-                                Text(record.playerOfSeasonName).font(.subheadline.bold()).foregroundStyle(.white)
+                                Text(record.playerOfSeasonName).font(.subheadline.bold()).foregroundStyle(theme.primaryText)
                                 if !record.playerOfSeasonClub.isEmpty {
-                                    Text(record.playerOfSeasonClub).font(.caption2).foregroundStyle(.white.opacity(0.6))
+                                    Text(record.playerOfSeasonClub).font(.caption2).foregroundStyle(theme.secondaryText)
                                 }
                             }
                         }
-                    }.padding(12).background(.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 13))
+                    }.padding(12).background(theme.surface, in: RoundedRectangle(cornerRadius: 13))
                         .contextMenu {
                             Button(role: .destructive) { store.deleteSeason(record) } label: {
                                 Label("Delete season", systemImage: "trash")
@@ -215,50 +223,50 @@ struct TrophyCabinetView: View {
 
     private func sectionHeading(_ title: String, symbol: String) -> some View {
         Label(title, systemImage: symbol).font(.system(size: 12, weight: .heavy))
-            .tracking(1.4).foregroundStyle(Color.lfcGold)
+            .tracking(1.4).foregroundStyle(theme.accent)
     }
 
     private func statCard(_ title: String, value: String, symbol: String) -> some View {
         VStack(spacing: 7) {
-            Image(systemName: symbol).foregroundStyle(Color.lfcGold)
-            Text(value).font(.title2.bold()).foregroundStyle(.white)
+            Image(systemName: symbol).foregroundStyle(theme.accent)
+            Text(value).font(.title2.bold()).foregroundStyle(theme.primaryText)
             Text(title).font(.system(size: 8, weight: .bold)).tracking(0.6)
-                .foregroundStyle(.white.opacity(0.55)).lineLimit(1).minimumScaleFactor(0.7)
+                .foregroundStyle(theme.secondaryText).lineLimit(1).minimumScaleFactor(0.7)
         }.frame(maxWidth: .infinity).padding(.vertical, 14)
-            .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 13))
-            .overlay(RoundedRectangle(cornerRadius: 13).stroke(Color.lfcGold.opacity(0.2), lineWidth: 1))
+            .background(theme.surface, in: RoundedRectangle(cornerRadius: 13))
+            .overlay(RoundedRectangle(cornerRadius: 13).stroke(theme.accent.opacity(0.22), lineWidth: 1))
     }
 
     private func recordTile(_ title: String, value: String, detail: String, symbol: String) -> some View {
         VStack(alignment: .leading, spacing: 7) {
-            Image(systemName: symbol).foregroundStyle(Color.lfcGold)
+            Image(systemName: symbol).foregroundStyle(theme.accent)
             Text(title.uppercased()).font(.system(size: 8, weight: .heavy)).tracking(0.7)
-                .foregroundStyle(.white.opacity(0.55))
-            Text(value).font(.headline).foregroundStyle(.white).lineLimit(1).minimumScaleFactor(0.7)
-            Text(detail).font(.caption2).foregroundStyle(Color.lfcGold.opacity(0.8)).lineLimit(2)
+                .foregroundStyle(theme.secondaryText)
+            Text(value).font(.headline).foregroundStyle(theme.primaryText).lineLimit(1).minimumScaleFactor(0.7)
+            Text(detail).font(.caption2).foregroundStyle(theme.accent.opacity(0.8)).lineLimit(2)
         }.frame(maxWidth: .infinity, alignment: .leading).padding(12)
-            .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 13))
+            .background(theme.surface, in: RoundedRectangle(cornerRadius: 13))
     }
 
     private func emptyHint(_ message: String) -> some View {
-        Text(message).font(.subheadline).foregroundStyle(.white.opacity(0.5))
+        Text(message).font(.subheadline).foregroundStyle(theme.secondaryText)
             .frame(maxWidth: .infinity).padding(20)
-            .background(.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 13))
+            .background(theme.surface, in: RoundedRectangle(cornerRadius: 13))
     }
 
     private func trophyRow(_ trophy: Trophy) -> some View {
         HStack(spacing: 13) {
-            Image(systemName: "trophy.fill").font(.title2).foregroundStyle(Color.lfcGold)
-                .frame(width: 46, height: 54).background(Color.lfcGold.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
+            Image(systemName: "trophy.fill").font(.title2).foregroundStyle(theme.accent)
+                .frame(width: 46, height: 54).background(theme.accent.opacity(0.10), in: RoundedRectangle(cornerRadius: 10))
             VStack(alignment: .leading, spacing: 4) {
-                Text(trophy.name).font(.headline).foregroundStyle(.white)
-                Text("\(trophy.competition) • \(trophy.season)").font(.subheadline).foregroundStyle(.white.opacity(0.65))
-                Text(trophy.club).font(.caption).foregroundStyle(Color.lfcGold.opacity(0.85))
+                Text(trophy.name).font(.headline).foregroundStyle(theme.primaryText)
+                Text("\(trophy.competition) • \(trophy.season)").font(.subheadline).foregroundStyle(theme.secondaryText)
+                Text(trophy.club).font(.caption).foregroundStyle(theme.accent.opacity(0.85))
             }
             Spacer()
-            Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.white.opacity(0.35))
-        }.padding(11).background(.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 14))
-            .overlay(RoundedRectangle(cornerRadius: 14).stroke(.white.opacity(0.08), lineWidth: 1))
+            Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(theme.secondaryText)
+        }.padding(11).background(theme.surface, in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(theme.border, lineWidth: 1))
     }
 }
 
