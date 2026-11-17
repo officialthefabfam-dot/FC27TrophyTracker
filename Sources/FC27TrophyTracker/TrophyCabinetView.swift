@@ -86,7 +86,7 @@ struct TrophyCabinetView: View {
                         Label("Add trophy", systemImage: "trophy")
                     }
                     Button { showingAddSeason = true } label: {
-                        Label("Add season & top scorer", systemImage: "crown")
+                        Label("Add season record", systemImage: "crown")
                     }
                     Divider()
                     ShareLink(item: store.backupData(), preview: SharePreview("FC 27 Trophy Tracker backup")) {
@@ -148,7 +148,7 @@ struct TrophyCabinetView: View {
                 }
             }
             if store.seasons.isEmpty {
-                emptyHint("Record each season's league and Golden Boot winner here.")
+                emptyHint("Record each season's league, Golden Boot winner and Player of the Season here.")
             } else {
                 ForEach(store.seasons.sorted { $0.season > $1.season }) { record in
                     HStack(spacing: 12) {
@@ -166,6 +166,15 @@ struct TrophyCabinetView: View {
                             Text(record.topScorerName).font(.subheadline.bold()).foregroundStyle(.white)
                             Text("\(record.topScorerGoals) goals • \(record.topScorerClub)")
                                 .font(.caption2).foregroundStyle(.white.opacity(0.6))
+                            if !record.playerOfSeasonName.isEmpty {
+                                Text("PLAYER OF THE SEASON").font(.system(size: 8, weight: .heavy))
+                                    .tracking(0.8).foregroundStyle(Color.lfcGold)
+                                    .padding(.top, 5)
+                                Text(record.playerOfSeasonName).font(.subheadline.bold()).foregroundStyle(.white)
+                                if !record.playerOfSeasonClub.isEmpty {
+                                    Text(record.playerOfSeasonClub).font(.caption2).foregroundStyle(.white.opacity(0.6))
+                                }
+                            }
                         }
                     }.padding(12).background(.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 13))
                         .contextMenu {
@@ -306,6 +315,8 @@ struct AddSeasonRecordView: View {
     @State private var scorer = ""
     @State private var scorerClub = ""
     @State private var goals = ""
+    @State private var playerOfSeason = ""
+    @State private var playerOfSeasonClub = ""
 
     var body: some View {
         NavigationStack {
@@ -320,6 +331,10 @@ struct AddSeasonRecordView: View {
                     TextField("Player's club", text: $scorerClub)
                     TextField("Goals scored", text: $goals).keyboardType(.numberPad)
                 }
+                Section("Player of the Season") {
+                    TextField("Award winner", text: $playerOfSeason)
+                    TextField("Player's club", text: $playerOfSeasonClub)
+                }
             }
             .navigationTitle("Season Record")
             .toolbar {
@@ -328,7 +343,9 @@ struct AddSeasonRecordView: View {
                     Button("Save") {
                         store.add(SeasonRecord(season: season, league: league, club: champions,
                             topScorerName: scorer, topScorerClub: scorerClub,
-                            topScorerGoals: Int(goals) ?? 0))
+                            topScorerGoals: Int(goals) ?? 0,
+                            playerOfSeasonName: playerOfSeason,
+                            playerOfSeasonClub: playerOfSeasonClub))
                         dismiss()
                     }.disabled(season.trimmingCharacters(in: .whitespaces).isEmpty ||
                                league.trimmingCharacters(in: .whitespaces).isEmpty ||
@@ -349,7 +366,7 @@ struct TrophyDetailView: View {
             ZStack {
                 Color(red: 0.055, green: 0.008, blue: 0.018).ignoresSafeArea()
                 VStack(spacing: 18) {
-                    Trophy3DView()
+                    Trophy3DView(competition: trophy.competition, category: trophy.category)
                         .frame(height: 245)
                         .padding(.horizontal, -8)
                     Text("DRAG TO ROTATE")

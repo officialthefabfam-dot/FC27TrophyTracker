@@ -169,7 +169,7 @@ struct TrophyRoomCabinetView: View {
                                 ForEach(row) { trophy in
                                     Button { onSelect(trophy) } label: {
                                         VStack(spacing: 3) {
-                                            TrophyCabinetOrnament(category: trophy.category)
+                                            TrophyCabinetOrnament(category: trophy.category, competition: trophy.competition)
                                                 .frame(height: 65)
                                                 .shadow(color: TrophyRoomPalette.gold.opacity(0.4), radius: 8, y: 1)
                                             Text(trophy.name)
@@ -271,6 +271,14 @@ private struct Triangle: Shape {
 
 private struct TrophyCabinetOrnament: View {
     let category: String
+    let competition: String
+    private var competitionStyle: Int {
+        let name = competition.lowercased()
+        if name.contains("champions") || name.contains("europe") || category == "Continental" { return 1 }
+        if name.contains("cup") || category == "Domestic Cup" { return 2 }
+        if category == "League" { return 3 }
+        return 0
+    }
     private var goldGradient: LinearGradient {
         LinearGradient(colors: [Color.white.opacity(0.95), TrophyRoomPalette.paleGold,
                                 TrophyRoomPalette.gold, TrophyRoomPalette.bronze,
@@ -294,11 +302,20 @@ private struct TrophyCabinetOrnament: View {
                 .frame(width: 34, height: 8).offset(y: 25)
             RoundedRectangle(cornerRadius: 2).fill(TrophyRoomPalette.bronze)
                 .frame(width: 42, height: 7).offset(y: 32)
-            if category == "Continental" {
-                Image(systemName: "star.fill")
-                    .font(.system(size: 10))
-                    .foregroundStyle(TrophyRoomPalette.paleGold)
-                    .offset(y: -9)
+            switch competitionStyle {
+            case 1:
+                Image(systemName: "star.circle.fill").font(.system(size: 17))
+                    .foregroundStyle(TrophyRoomPalette.paleGold).offset(y: -9)
+            case 2:
+                RoundedRectangle(cornerRadius: 3).stroke(TrophyRoomPalette.paleGold, lineWidth: 2)
+                    .frame(width: 18, height: 23).offset(y: -9)
+            case 3:
+                Image(systemName: "laurel.leading").font(.system(size: 18))
+                    .foregroundStyle(TrophyRoomPalette.paleGold).offset(x: -17, y: -8)
+                Image(systemName: "laurel.trailing").font(.system(size: 18))
+                    .foregroundStyle(TrophyRoomPalette.paleGold).offset(x: 17, y: -8)
+            default:
+                EmptyView()
             }
         }
         .frame(maxWidth: .infinity)
@@ -320,13 +337,13 @@ private struct CupBowl: Shape {
 }
 
 struct Trophy3DView: View {
-    var body: some View {
-        SceneView(scene: makeScene(), options: [.allowsCameraControl, .autoenablesDefaultLighting])
-            .background(Color.clear)
-            .accessibilityLabel("Interactive 3D gold football trophy. Drag to rotate.")
-    }
+    let competition: String
+    let category: String
 
-    private func makeScene() -> SCNScene {
-        DetailedTrophyScene.makeScene()
+    var body: some View {
+        SceneView(scene: DetailedTrophyScene.makeScene(competition: competition, category: category),
+                  options: [.allowsCameraControl, .autoenablesDefaultLighting])
+            .background(Color.clear)
+            .accessibilityLabel("Interactive competition-specific 3D football trophy. Drag to rotate.")
     }
 }

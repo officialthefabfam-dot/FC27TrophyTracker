@@ -3,8 +3,12 @@ import UIKit
 
 /// Builds the detailed, metallic cup used by the trophy inspection view.
 enum DetailedTrophyScene {
-    static func makeScene() -> SCNScene {
+    static func makeScene(competition: String = "", category: String = "") -> SCNScene {
         let scene = SCNScene()
+        let competitionName = competition.lowercased()
+        let isContinental = category == "Continental" || competitionName.contains("champions") || competitionName.contains("europe")
+        let isDomesticCup = category == "Domestic Cup" || competitionName.contains("cup")
+        let isLeague = category == "League"
         scene.background.contents = UIColor.clear
 
         let gold = metal(UIColor(red: 0.96, green: 0.70, blue: 0.24, alpha: 1), roughness: 0.16)
@@ -15,11 +19,24 @@ enum DetailedTrophyScene {
         let model = SCNNode()
 
         // A hollow, flared cup rather than the previous solid cone.
-        let bowlProfile: [(Float, Float)] = [
-            (0.43, 0.13), (0.47, 0.19), (0.53, 0.23), (0.62, 0.27),
-            (0.78, 0.32), (0.96, 0.38), (1.12, 0.44), (1.19, 0.48),
-            (1.23, 0.49), (1.25, 0.46)
-        ]
+        let bowlProfile: [(Float, Float)]
+        if isContinental {
+            // Broad, open ceremonial cup with generous curved shoulders.
+            bowlProfile = [(0.43, 0.13), (0.49, 0.20), (0.58, 0.29), (0.72, 0.39),
+                           (0.91, 0.48), (1.10, 0.55), (1.20, 0.58), (1.24, 0.56)]
+        } else if isDomesticCup {
+            // Taller, narrower handled cup with a pronounced upper lip.
+            bowlProfile = [(0.43, 0.13), (0.50, 0.18), (0.65, 0.23), (0.83, 0.29),
+                           (1.02, 0.36), (1.17, 0.43), (1.24, 0.47), (1.27, 0.45)]
+        } else if isLeague {
+            // Sleeker, tapered league award with a taller stem.
+            bowlProfile = [(0.43, 0.12), (0.52, 0.17), (0.68, 0.22), (0.86, 0.28),
+                           (1.05, 0.34), (1.19, 0.39), (1.25, 0.41), (1.28, 0.39)]
+        } else {
+            bowlProfile = [(0.43, 0.13), (0.47, 0.19), (0.53, 0.23), (0.62, 0.27),
+                           (0.78, 0.32), (0.96, 0.38), (1.12, 0.44), (1.19, 0.48),
+                           (1.23, 0.49), (1.25, 0.46)]
+        }
         let bowl = lathe(profile: bowlProfile, material: gold)
         model.addChildNode(bowl)
 
@@ -33,7 +50,7 @@ enum DetailedTrophyScene {
             handle.firstMaterial = brightGold
             let handleNode = SCNNode(geometry: handle)
             handleNode.position = SCNVector3(side * 0.435, 0.91, 0)
-            handleNode.scale = SCNVector3(0.78, 1.38, 0.72)
+            handleNode.scale = isContinental ? SCNVector3(0.94, 1.48, 0.82) : (isDomesticCup ? SCNVector3(0.72, 1.28, 0.68) : SCNVector3(0.78, 1.38, 0.72))
             model.addChildNode(handleNode)
 
             let collar = SCNTorus(ringRadius: 0.065, pipeRadius: 0.018)
