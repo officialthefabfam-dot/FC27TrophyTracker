@@ -7,12 +7,21 @@ private extension Color {
 }
 
 struct TrophyCabinetView: View {
+    private enum ActiveSheet: Identifiable {
+        case addTrophy, addSeason, settings, trophy(Trophy)
+        var id: String {
+            switch self {
+            case .addTrophy: return "addTrophy"
+            case .addSeason: return "addSeason"
+            case .settings: return "settings"
+            case .trophy(let trophy): return "trophy-" + String(describing: trophy.id)
+            }
+        }
+    }
     @EnvironmentObject private var store: TrophyStore
     @EnvironmentObject private var theme: ThemeSettings
-    @State private var showingAddTrophy = false
-    @State private var showingSettings = false
-    @State private var showingAddSeason = false
-    @State private var selectedTrophy: Trophy?
+    @State private var activeSheet: ActiveSheet?
+    @State private var showingQuickActions = false
     @State private var search = ""
     @State private var selectedCategory = "All"
     @State private var showingImporter = false
@@ -47,14 +56,22 @@ struct TrophyCabinetView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
-            .sheet(isPresented: $showingAddTrophy) {
-                AddTrophyView().environmentObject(store)
+            .sheet(item: $activeSheet) { destination in
+                switch destination {
+                case .addTrophy: AddTrophyView().environmentObject(store)
+                case .addSeason: AddSeasonRecordView().environmentObject(store)
+                case .settings: ThemeSettingsView().environmentObject(theme)
+                case .trophy(let trophy): TrophyDetailView(trophy: trophy).environmentObject(theme)
+                }
             }
-            .sheet(isPresented: $showingAddSeason) {
-                AddSeasonRecordView().environmentObject(store)
-            }
-            .sheet(item: $selectedTrophy) { trophy in
-                TrophyDetailView(trophy: trophy)
+            .confirmationDialog("Add to your career", isPresented: $showingQuickActions, titleVisibility: .visible) {
+                Button("Add trophy") { activeSheet = .addTrophy }
+                Button("Add season record") { activeSheet = .addSeason }
+                ShareLink(item: store.backupData(), preview: SharePreview("FC 27 Trophy Tracker backup")) {
+                    Label("Export backup", systemImage: "square.and.arrow.up")
+                }
+                Button("Restore backup") { showingImporter = true }
+                Button("Cancel", role: .cancel) {}
             }
             .fileImporter(isPresented: $showingImporter, allowedContentTypes: [.json]) { result in
                 do {
@@ -80,34 +97,20 @@ struct TrophyCabinetView: View {
                     .font(.system(size: 14, weight: .black, design: .rounded))
                     .tracking(3).foregroundStyle(theme.accent)
                 Spacer()
-                Button { showingSettings = true } label: {
+                Button { activeSheet = .settings } label: {
                     Image(systemName: "slider.horizontal.3")
                         .font(.title3).foregroundStyle(theme.accent)
+                        .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 .accessibilityLabel("Personalise appearance")
-                .sheet(isPresented: $showingSettings) {
-                    ThemeSettingsView()
-                        .environmentObject(theme)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
+                Button { showingQuickActions = true } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2).foregroundStyle(theme.accent)
+                        .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
-                Menu {
-                    Button { showingAddTrophy = true } label: {
-                        Label("Add trophy", systemImage: "trophy")
-                    }
-                    Button { showingAddSeason = true } label: {
-                        Label("Add season record", systemImage: "crown")
-                    }
-                    Divider()
-                    ShareLink(item: store.backupData(), preview: SharePreview("FC 27 Trophy Tracker backup")) {
-                        Label("Export backup", systemImage: "square.and.arrow.up")
-                    }
-                    Button { showingImporter = true } label: {
-                        Label("Restore backup", systemImage: "square.and.arrow.down")
-                    }
-                } label: {
-                    Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(theme.accent)
-                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add to career")
             }
             TrophyRoomHeaderView()
         }.padding(.vertical, 8)
@@ -115,7 +118,7 @@ struct TrophyCabinetView: View {
 
     private var visualCabinet: some View {
         TrophyRoomCabinetView(trophies: store.trophies) { trophy in
-            selectedTrophy = trophy
+            activeSheet = .trophy(trophy)
         }
     }
 
@@ -152,7 +155,7 @@ struct TrophyCabinetView: View {
             HStack {
                 sectionHeading("SEASON HISTORY", symbol: "clock.arrow.circlepath")
                 Spacer()
-                Button { showingAddSeason = true } label: {
+                Button { activeSheet = .addSeason } label: {
                     Image(systemName: "plus").font(.caption.bold()).foregroundStyle(theme.primaryText)
                         .padding(8).background(theme.accent, in: Circle())
                 }
@@ -210,7 +213,7 @@ struct TrophyCabinetView: View {
             } else {
                 LazyVStack(spacing: 10) {
                     ForEach(filtered) { trophy in
-                        Button { selectedTrophy = trophy } label: { trophyRow(trophy) }
+                        Button { activeSheet = .trophy(trophy) } label: { trophyRow(trophy) }
                             .buttonStyle(.plain)
                             .contextMenu {
                                 Button(role: .destructive) { store.deleteTrophy(trophy) } label: {
