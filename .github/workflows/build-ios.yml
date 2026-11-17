@@ -3,7 +3,7 @@ name: Build iOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main, theme/build-26-neutral-refresh]
+    branches: [main, theme/build-26-neutral-refresh, runner/build-35-macos-26-intel]
 
 jobs:
   build:
