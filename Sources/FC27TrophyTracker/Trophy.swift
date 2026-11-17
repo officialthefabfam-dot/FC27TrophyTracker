@@ -47,9 +47,12 @@ struct SeasonRecord: Identifiable, Codable {
     var topScorerName: String
     var topScorerClub: String
     var topScorerGoals: Int
+    var playerOfSeasonName: String
+    var playerOfSeasonClub: String
 
     init(id: UUID = UUID(), season: String, league: String, club: String,
-         topScorerName: String, topScorerClub: String, topScorerGoals: Int) {
+         topScorerName: String, topScorerClub: String, topScorerGoals: Int,
+         playerOfSeasonName: String = "", playerOfSeasonClub: String = "") {
         self.id = id
         self.season = season
         self.league = league
@@ -57,10 +60,13 @@ struct SeasonRecord: Identifiable, Codable {
         self.topScorerName = topScorerName
         self.topScorerClub = topScorerClub
         self.topScorerGoals = topScorerGoals
+        self.playerOfSeasonName = playerOfSeasonName
+        self.playerOfSeasonClub = playerOfSeasonClub
     }
 
     private enum CodingKeys: String, CodingKey {
         case id, season, league, club, topScorerName, topScorerClub, topScorerGoals
+        case playerOfSeasonName, playerOfSeasonClub
     }
 
     init(from decoder: Decoder) throws {
@@ -72,6 +78,8 @@ struct SeasonRecord: Identifiable, Codable {
         topScorerName = try values.decodeIfPresent(String.self, forKey: .topScorerName) ?? ""
         topScorerClub = try values.decodeIfPresent(String.self, forKey: .topScorerClub) ?? ""
         topScorerGoals = try values.decodeIfPresent(Int.self, forKey: .topScorerGoals) ?? 0
+        playerOfSeasonName = try values.decodeIfPresent(String.self, forKey: .playerOfSeasonName) ?? ""
+        playerOfSeasonClub = try values.decodeIfPresent(String.self, forKey: .playerOfSeasonClub) ?? ""
     }
 }
 
