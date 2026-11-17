@@ -7,7 +7,15 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            runner_name: apple-silicon
+          - runner: macos-15-intel
+            runner_name: intel
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
       - name: Generate Liverpool-inspired app icon
@@ -29,6 +37,6 @@ jobs:
           zip -r FC27TrophyTracker-unsigned.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
-          name: FC27TrophyTracker-unsigned-IPA
+          name: FC27TrophyTracker-unsigned-IPA-${{ matrix.runner_name }}
           path: FC27TrophyTracker-unsigned.ipa
           retention-days: 14
