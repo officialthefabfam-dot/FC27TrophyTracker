@@ -8,10 +8,9 @@ private extension Color {
 
 struct TrophyCabinetView: View {
     private enum ActiveSheet: Identifiable {
-        case addTrophy, addSeason, settings, trophy(Trophy)
+        case addSeason, settings, trophy(Trophy)
         var id: String {
             switch self {
-            case .addTrophy: return "addTrophy"
             case .addSeason: return "addSeason"
             case .settings: return "settings"
             case .trophy(let trophy): return "trophy-" + String(describing: trophy.id)
@@ -21,6 +20,7 @@ struct TrophyCabinetView: View {
     @EnvironmentObject private var store: TrophyStore
     @EnvironmentObject private var theme: ThemeSettings
     @State private var activeSheet: ActiveSheet?
+    @State private var showingAddTrophy = false
     @State private var search = ""
     @State private var selectedCategory = "All"
     @State private var showingImporter = false
@@ -57,7 +57,6 @@ struct TrophyCabinetView: View {
             .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $activeSheet) { destination in
                 switch destination {
-                case .addTrophy: AddTrophyView().environmentObject(store)
                 case .addSeason: AddSeasonRecordView().environmentObject(store)
                 case .settings: ThemeSettingsView().environmentObject(theme)
                 case .trophy(let trophy): TrophyDetailView(trophy: trophy).environmentObject(theme)
@@ -94,10 +93,20 @@ struct TrophyCabinetView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Personalise appearance")
+                Button {
+                    showingAddTrophy = true
+                } label: {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2).foregroundStyle(theme.accent)
+                        .frame(width: 48, height: 48).contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add trophy")
+                .accessibilityHint("Opens the form to add a trophy")
+                .sheet(isPresented: $showingAddTrophy) {
+                    AddTrophyView().environmentObject(store)
+                }
                 Menu {
-                    Button { activeSheet = .addTrophy } label: {
-                        Label("Add trophy", systemImage: "trophy")
-                    }
                     Button { activeSheet = .addSeason } label: {
                         Label("Add season record", systemImage: "crown")
                     }
@@ -109,11 +118,11 @@ struct TrophyCabinetView: View {
                         Label("Restore backup", systemImage: "square.and.arrow.down")
                     }
                 } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title2).foregroundStyle(theme.accent)
+                    Image(systemName: "ellipsis.circle")
+                        .font(.title3).foregroundStyle(theme.accent)
                         .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
-                .accessibilityLabel("Add to career")
+                .accessibilityLabel("More career actions")
             }
             TrophyRoomHeaderView()
         }.padding(.vertical, 8)
