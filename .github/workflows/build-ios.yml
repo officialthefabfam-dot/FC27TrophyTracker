@@ -3,14 +3,14 @@ name: Build iOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/customizable-neutral-theme]
+    branches: [main, theme/build-26-neutral-refresh]
 
 jobs:
   build:
     runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
-      - name: Generate neutral app icon
+      - name: Generate Liverpool-inspired app icon
         run: |
           python3 -m venv .venv
           .venv/bin/python -m pip install Pillow
