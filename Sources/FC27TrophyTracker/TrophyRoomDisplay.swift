@@ -2,12 +2,12 @@ import SwiftUI
 import SceneKit
 
 private enum TrophyRoomPalette {
-    static let red = Color(red: 0.43, green: 0.006, blue: 0.035)
-    static let deepRed = Color(red: 0.12, green: 0.004, blue: 0.018)
-    static let gold = Color(red: 1.0, green: 0.72, blue: 0.22)
-    static let paleGold = Color(red: 1.0, green: 0.88, blue: 0.52)
-    static let bronze = Color(red: 0.47, green: 0.23, blue: 0.055)
-    static let wood = Color(red: 0.19, green: 0.065, blue: 0.025)
+    static let red = Color(red: 0.16, green: 0.19, blue: 0.25)
+    static let deepRed = Color(red: 0.045, green: 0.055, blue: 0.075)
+    static let gold = Color(red: 0.82, green: 0.72, blue: 0.52)
+    static let paleGold = Color(red: 0.94, green: 0.88, blue: 0.72)
+    static let bronze = Color(red: 0.42, green: 0.36, blue: 0.25)
+    static let wood = Color(red: 0.10, green: 0.12, blue: 0.16)
 }
 
 struct TrophyRoomHeaderView: View {
@@ -44,7 +44,7 @@ struct TrophyRoomHeaderView: View {
                         .foregroundStyle(LinearGradient(colors: [TrophyRoomPalette.paleGold, TrophyRoomPalette.gold, TrophyRoomPalette.bronze],
                                                         startPoint: .top, endPoint: .bottom))
                         .shadow(color: TrophyRoomPalette.gold.opacity(0.6), radius: 10)
-                    Text("ANFIELD")
+                    Text("CAREER LEGACY")
                         .font(.system(size: 17, weight: .black, design: .serif))
                         .tracking(4)
                         .foregroundStyle(TrophyRoomPalette.paleGold)
@@ -58,7 +58,7 @@ struct TrophyRoomHeaderView: View {
                         .shadow(color: .black.opacity(0.8), radius: 5, y: 3)
                     Rectangle().fill(TrophyRoomPalette.gold.opacity(0.75)).frame(height: 1)
                         .padding(.horizontal, 26)
-                    Text("YOU’LL NEVER WALK ALONE • YOUR LEGACY")
+                    Text("EVERY TROPHY TELLS A STORY")
                         .font(.system(size: 9, weight: .heavy))
                         .tracking(1.7)
                         .minimumScaleFactor(0.65)
@@ -123,8 +123,8 @@ struct TrophyRoomCabinetView: View {
 
             ZStack {
                 RoundedRectangle(cornerRadius: 13)
-                    .fill(LinearGradient(colors: [Color(red: 0.25, green: 0.085, blue: 0.032),
-                                                  TrophyRoomPalette.wood, Color(red: 0.08, green: 0.025, blue: 0.012)],
+                    .fill(LinearGradient(colors: [Color(red: 0.15, green: 0.17, blue: 0.21),
+                                                  TrophyRoomPalette.wood, Color(red: 0.045, green: 0.055, blue: 0.075)],
                                          startPoint: .topLeading, endPoint: .bottomTrailing))
                 HStack(spacing: 0) {
                     ForEach(0..<14, id: \.self) { index in
@@ -209,7 +209,7 @@ struct TrophyRoomCabinetView: View {
                         }
                     }
                     Spacer(minLength: 0)
-                    Text("YOU’LL NEVER WALK ALONE")
+                    Text("YOUR CAREER • YOUR LEGACY")
                         .font(.system(size: 8, weight: .black))
                         .tracking(2.2)
                         .foregroundStyle(TrophyRoomPalette.paleGold)
