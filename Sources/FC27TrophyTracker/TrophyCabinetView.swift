@@ -47,10 +47,6 @@ struct TrophyCabinetView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
-            .sheet(isPresented: $showingSettings) {
-                ThemeSettingsView().environmentObject(theme)
-                    .presentationDetents([.medium, .large])
-            }
             .sheet(isPresented: $showingAddTrophy) {
                 AddTrophyView().environmentObject(store)
             }
@@ -89,6 +85,12 @@ struct TrophyCabinetView: View {
                         .font(.title3).foregroundStyle(theme.accent)
                 }
                 .accessibilityLabel("Personalise appearance")
+                .sheet(isPresented: $showingSettings) {
+                    ThemeSettingsView()
+                        .environmentObject(theme)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                }
                 Menu {
                     Button { showingAddTrophy = true } label: {
                         Label("Add trophy", systemImage: "trophy")
