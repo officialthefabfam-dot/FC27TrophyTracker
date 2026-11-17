@@ -3,19 +3,11 @@ name: Build iOS app
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, theme/build-26-neutral-refresh]
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runner: macos-15
-            runner_name: apple-silicon
-          - runner: macos-15-intel
-            runner_name: intel
-    runs-on: ${{ matrix.runner }}
+    runs-on: macos-15-intel
     steps:
       - uses: actions/checkout@v4
       - name: Generate Liverpool-inspired app icon
@@ -37,6 +29,6 @@ jobs:
           zip -r FC27TrophyTracker-unsigned.ipa Payload
       - uses: actions/upload-artifact@v4
         with:
-          name: FC27TrophyTracker-unsigned-IPA-${{ matrix.runner_name }}
+          name: FC27TrophyTracker-unsigned-IPA-intel
           path: FC27TrophyTracker-unsigned.ipa
           retention-days: 14
