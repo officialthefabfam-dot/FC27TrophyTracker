@@ -151,7 +151,7 @@ struct TrophyCabinetView: View {
                 sectionHeading("SEASON HISTORY", symbol: "clock.arrow.circlepath")
                 Spacer()
                 Button { showingAddSeason = true } label: {
-                    Image(systemName: "plus").font(.caption.bold()).foregroundStyle(.white)
+                    Image(systemName: "plus").font(.caption.bold()).foregroundStyle(theme.primaryText)
                         .padding(8).background(theme.accent, in: Circle())
                 }
             }
@@ -367,12 +367,13 @@ struct AddSeasonRecordView: View {
 
 struct TrophyDetailView: View {
     let trophy: Trophy
+    @EnvironmentObject private var theme: ThemeSettings
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 0.055, green: 0.008, blue: 0.018).ignoresSafeArea()
+                theme.background.ignoresSafeArea()
                 VStack(spacing: 18) {
                     Trophy3DView(competition: trophy.competition, category: trophy.category)
                         .frame(height: 245)
@@ -380,9 +381,9 @@ struct TrophyDetailView: View {
                     Text("DRAG TO ROTATE")
                         .font(.system(size: 9, weight: .heavy))
                         .tracking(2)
-                        .foregroundStyle(Color.lfcGold.opacity(0.7))
+                        .foregroundStyle(theme.accent.opacity(0.7))
                     Text(trophy.name.uppercased()).font(.title2.weight(.black)).multilineTextAlignment(.center)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(theme.primaryText)
                     detailLine("Competition", trophy.competition)
                     detailLine("Season", trophy.season)
                     detailLine("Club", trophy.club)
@@ -400,9 +401,9 @@ struct TrophyDetailView: View {
 
     private func detailLine(_ title: String, _ value: String) -> some View {
         HStack {
-            Text(title).foregroundStyle(.white.opacity(0.55))
+            Text(title).foregroundStyle(theme.secondaryText)
             Spacer()
-            Text(value).bold().foregroundStyle(.white).multilineTextAlignment(.trailing)
+            Text(value).bold().foregroundStyle(theme.primaryText).multilineTextAlignment(.trailing)
         }.padding(.vertical, 5)
     }
 }
